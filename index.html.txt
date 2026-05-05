@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>JetSetUniqResearch | NEPSE for Beginners</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Tailwind config override -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-blue': '#0A2540',
+                        'premium-gray': '#F7F9FC',
+                        'accent': '#0066CC',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth transitions and card hover effect */
+        .card-hover {
+            transition: all 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-premium-gray text-gray-800 font-sans antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-dark-blue text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="text-2xl font-bold tracking-tight cursor-pointer" onclick="showPage('home')">
+                    JetSetUniq<span class="text-[#0066CC]">Research</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="showPage('home')" class="nav-btn hover:text-[#0066CC] transition">Home</button>
+                    <button onclick="showPage('ipos')" class="nav-btn hover:text-[#0066CC] transition">IPOs</button>
+                    <button onclick="showPage('mutualfunds')" class="nav-btn hover:text-[#0066CC] transition">Mutual Funds</button>
+                    <button onclick="showPage('sectors')" class="nav-btn hover:text-[#0066CC] transition">Sectors</button>
+                    <button onclick="showPage('blog')" class="nav-btn hover:text-[#0066CC] transition">Blog</button>
+                </div>
+                <!-- Mobile menu button (simplified) -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="focus:outline-none">☰</button>
+                </div>
+            </div>
+            <!-- Mobile menu panel (hidden by default) -->
+            <div id="mobileMenu" class="md:hidden hidden pb-4 space-y-2">
+                <button onclick="showPage('home'); toggleMobileMenu()" class="block w-full text-left py-2 px-2 hover:bg-gray-800 rounded">Home</button>
+                <button onclick="showPage('ipos'); toggleMobileMenu()" class="block w-full text-left py-2 px-2 hover:bg-gray-800 rounded">IPOs</button>
+                <button onclick="showPage('mutualfunds'); toggleMobileMenu()" class="block w-full text-left py-2 px-2 hover:bg-gray-800 rounded">Mutual Funds</button>
+                <button onclick="showPage('sectors'); toggleMobileMenu()" class="block w-full text-left py-2 px-2 hover:bg-gray-800 rounded">Sectors</button>
+                <button onclick="showPage('blog'); toggleMobileMenu()" class="block w-full text-left py-2 px-2 hover:bg-gray-800 rounded">Blog</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- HOME PAGE -->
+        <div id="homePage" class="page-content">
+            <!-- Hero -->
+            <div class="bg-dark-blue text-white rounded-2xl p-8 md:p-12 text-center mb-16">
+                <h1 class="text-3xl md:text-5xl font-bold mb-4">Simple Research.<br>Smarter Investing.</h1>
+                <p class="text-gray-300 text-lg max-w-2xl mx-auto">Beginner-friendly insights for NEPSE investors. IPOs, Mutual Funds, and Sector Analysis made easy.</p>
+            </div>
+
+            <!-- Latest IPO Analysis -->
+            <div class="mb-16">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark-blue">Latest IPO Analysis</h2>
+                    <button onclick="showPage('ipos')" class="text-accent hover:underline">View all →</button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6" id="homeIPOList"></div>
+            </div>
+
+            <!-- Mutual Fund Insights -->
+            <div class="mb-16">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark-blue">Mutual Fund Insights</h2>
+                    <button onclick="showPage('mutualfunds')" class="text-accent hover:underline">View all →</button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6" id="homeFundList"></div>
+            </div>
+
+            <!-- Sector Analysis -->
+            <div class="mb-16">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-dark-blue">NEPSE Sector Analysis</h2>
+                    <button onclick="showPage('sectors')" class="text-accent hover:underline">View all →</button>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6" id="homeSectorList"></div>
+            </div>
+        </div>
+
+        <!-- IPO PAGE -->
+        <div id="iposPage" class="page-content hidden">
+            <h1 class="text-3xl md:text-4xl font-bold text-dark-blue mb-3">IPO Analysis</h1>
+            <p class="text-gray-600 mb-8">Detailed analysis of upcoming and recent IPOs in Nepal. Learn if you should apply.</p>
+            <div class="grid md:grid-cols-2 gap-8" id="ipoList"></div>
+        </div>
+
+        <!-- MUTUAL FUNDS PAGE -->
+        <div id="mutualfundsPage" class="page-content hidden">
+            <h1 class="text-3xl md:text-4xl font-bold text-dark-blue mb-3">Mutual Fund Insights</h1>
+            <p class="text-gray-600 mb-8">Professional fund analysis for Nepalese investors. Start with as little as NRs 1000.</p>
+            <div class="grid md:grid-cols-2 gap-8" id="fundList"></div>
+        </div>
+
+        <!-- SECTORS PAGE -->
+        <div id="sectorsPage" class="page-content hidden">
+            <h1 class="text-3xl md:text-4xl font-bold text-dark-blue mb-3">NEPSE Sector Analysis</h1>
+            <p class="text-gray-600 mb-8">Understand key sectors before investing. Expert insights for beginners.</p>
+            <div id="sectorList"></div>
+        </div>
+
+        <!-- BLOG PAGE -->
+        <div id="blogPage" class="page-content hidden">
+            <h1 class="text-3xl md:text-4xl font-bold text-dark-blue mb-3">Investment Blog</h1>
+            <p class="text-gray-600 mb-8">Learn investing basics. Simple explanations for beginners.</p>
+            <div class="grid md:grid-cols-3 gap-8" id="blogList"></div>
+        </div>
+
+        <!-- DETAIL VIEW (for IPO and Mutual Fund) - hidden by default -->
+        <div id="detailView" class="page-content hidden">
+            <button onclick="goBack()" class="mb-6 text-accent hover:underline flex items-center gap-1">← Back</button>
+            <div id="detailContent"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-blue text-gray-400 mt-20 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>© 2025 JetSetUniqResearch. Made for NEPSE beginners.</p>
+            <p class="text-xs mt-2">Educational purposes only. Not investment advice.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ---------- MOCK DATA (same as original backend) ----------
+        const ipoData = [
+            { id: "nabil-bank-ipo", name: "Nabil Bank Limited IPO", status: "Upcoming", price: "NRs 400", openDate: "2024-08-15", overview: "Nabil Bank is one of Nepal's leading private commercial banks, established in 1984. Known for strong financial performance.", financialSummary: "Net profit NRs 3.2 billion, EPS NRs 45.2. Consistent dividend 15-20%.", riskFactors: "Market competition, interest rate fluctuations.", shouldApply: "✅ Good for long-term investors. Strong fundamentals and dividend history." },
+            { id: "upper-hydropower", name: "Upper Hydropower Limited", status: "Recent", price: "NRs 250", openDate: "2024-06-10", overview: "Run-of-river hydro projects in central Nepal, 15MW operational.", financialSummary: "Revenue growth 22% YoY. Operating margin 38%.", riskFactors: "Monsoon dependency, regulatory changes.", shouldApply: "⚠️ Moderate risk. Hydropower has growth potential but seasonal risks." }
+        ];
+
+        const mutualFundsData = [
+            { id: "siddhartha-equity-fund-ii", name: "Siddhartha Equity Fund II", type: "Equity Mutual Fund", performance: "15.2% (1Y Return)", overview: "Invests primarily in stocks of Nepalese companies with growth potential.", objective: "Long-term capital appreciation through diversified equity portfolio.", portfolio: { banks: "45%", hydropower: "30%", insurance: "15%", others: "10%" }, performanceInsights: "Outperformed NEPSE index by 3.5% in last year.", riskLevel: "Medium", riskExplanation: "Market risk but diversification reduces volatility.", whoShouldInvest: "Beginners who want stock market exposure without picking individual shares." },
+            { id: "nibl-samriddhi", name: "NIBL Samriddhi Fund", type: "Hybrid Fund", performance: "12.8% (1Y Return)", overview: "Balanced fund investing in equities and fixed income.", objective: "Stable returns with moderate risk.", portfolio: { equities: "60%", bonds: "30%", cash: "10%" }, performanceInsights: "Lower volatility, consistent 3-year returns.", riskLevel: "Medium-Low", riskExplanation: "Mix of stocks and bonds reduces downside risk.", whoShouldInvest: "Conservative beginners looking for stable growth." }
+        ];
+
+        const sectorsData = [
+            { name: "Banking Sector", overview: "Backbone of NEPSE: commercial banks, development banks. Provide loans, deposits.", trends: "Digital transformation, mergers, interest rate sensitivity.", insight: "✅ Stable with regular dividends. Look for low NPL and high capital adequacy." },
+            { name: "Hydropower Sector", overview: "Nepal's hydropower potential attracts many investors. Companies generate electricity.", trends: "Seasonal generation, government policies, export to India.", insight: "⚠️ High risk, high reward. Long-term but volatile." },
+            { name: "Finance Sector", overview: "Micro-lending, hire purchase, small business loans. Serve rural areas.", trends: "Consolidation, digital lending, NRB tightening.", insight: "💰 Higher returns but higher risk than banks. Look for good governance." }
+        ];
+
+        const blogsData = [
+            { id: "ipo-guide", title: "How to Analyze an IPO (Beginner Guide)", excerpt: "Simple steps: financial health, company track record, valuation.", content: "1. Check profit history (3 years). 2. Compare PE ratio. 3. Read risk factors. 4. Ask: Would I hold for 2 years? Stick to established banks or hydropower." },
+            { id: "nav-guide", title: "What is NAV in Mutual Funds?", excerpt: "Net Asset Value explained simply.", content: "NAV = total assets / number of units. It changes daily. Focus on fund performance, not low NAV." },
+            { id: "mistakes", title: "Common Mistakes New Investors Make", excerpt: "Avoid chasing tips, panic selling, ignoring diversification.", content: "Top mistakes: tips from social media, no exit plan, all money in one sector, panic selling, not reading reports. Start small, learn first." }
+        ];
+
+        // Helper: render card HTML
+        function renderCard(title, subtitle, description, linkId, linkType, badgeText, badgeColor) {
+            return `
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover border border-gray-100">
+                    <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-3 ${badgeColor}">${badgeText}</span>
+                    <h3 class="text-xl font-bold text-dark-blue mb-2">${title}</h3>
+                    ${subtitle ? `<p class="text-sm text-gray-600 mb-3">${subtitle}</p>` : ''}
+                    <p class="text-gray-700 text-sm mb-4 line-clamp-3">${description}</p>
+                    <button onclick="showDetail('${linkType}', '${linkId}')" class="text-accent font-semibold text-sm hover:underline">View Details →</button>
+                </div>
+            `;
+        }
+
+        // Render Home Page
+        function renderHome() {
+            // Latest 2 IPOs
+            const homeIPO = ipoData.slice(0,2).map(ipo => renderCard(ipo.name, `Status: ${ipo.status} | Price: ${ipo.price}`, ipo.overview.substring(0,100), ipo.id, 'ipo', 'IPO', ipo.status === 'Upcoming' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800')).join('');
+            document.getElementById('homeIPOList').innerHTML = homeIPO;
+            
+            const homeFunds = mutualFundsData.slice(0,2).map(f => renderCard(f.name, `${f.type} | ${f.performance}`, f.overview, f.id, 'fund', 'Mutual Fund', 'bg-green-100 text-green-800')).join('');
+            document.getElementById('homeFundList').innerHTML = homeFunds;
+            
+            const homeSectors = sectorsData.map(s => renderCard(s.name, '', s.overview.substring(0,80), s.name, 'sector', s.name.split(' ')[0], 'bg-purple-100 text-purple-800')).join('');
+            document.getElementById('homeSectorList').innerHTML = homeSectors;
+        }
+
+        // Render IPO List Page
+        function renderIposPage() {
+            const html = ipoData.map(ipo => renderCard(ipo.name, `Status: ${ipo.status} | Price: ${ipo.price} | Open: ${ipo.openDate}`, ipo.financialSummary, ipo.id, 'ipo', ipo.status, ipo.status === 'Upcoming' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800')).join('');
+            document.getElementById('ipoList').innerHTML = html;
+        }
+
+        // Render Mutual Fund List Page
+        function renderFundsPage() {
+            const html = mutualFundsData.map(f => renderCard(f.name, `${f.type} | 1Y Return: ${f.performance}`, f.overview, f.id, 'fund', f.riskLevel, f.riskLevel === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800')).join('');
+            document.getElementById('fundList').innerHTML = html;
+        }
+
+        // Render Sectors Page (detailed)
+        function renderSectorsPage() {
+            let html = `<div class="space-y-8">`;
+            sectorsData.forEach((s, idx) => {
+                html += `
+                    <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-10 h-10 bg-dark-blue rounded-lg flex items-center justify-center text-white font-bold">${idx+1}</div>
+                            <h2 class="text-2xl font-bold text-dark-blue">${s.name}</h2>
+                        </div>
+                        <div class="space-y-3">
+                            <p><strong>📌 Overview:</strong> ${s.overview}</p>
+                            <p><strong>📈 Key Trends:</strong> ${s.trends}</p>
+                            <div class="bg-blue-50 p-4 rounded-lg"><strong>💡 Beginner Insights:</strong> ${s.insight}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div><div class="mt-6 bg-yellow-50 p-4 rounded-lg text-sm">🧠 Pro Tip: Diversify across sectors.</div>`;
+            document.getElementById('sectorList').innerHTML = html;
+        }
+
+        // Render Blog List Page
+        function renderBlogPage() {
+            const html = blogsData.map(b => renderCard(b.title, '', b.excerpt, b.id, 'blog', 'Article', 'bg-orange-100 text-orange-800')).join('');
+            document.getElementById('blogList').innerHTML = html;
+        }
+
+        // Detail view - IPO
+        function showIPOdetail(id) {
+            const ipo = ipoData.find(i => i.id === id);
+            if (!ipo) return;
+            document.getElementById('detailContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+                    <h1 class="text-3xl font-bold text-dark-blue">${ipo.name}</h1>
+                    <span class="inline-block mt-2 px-3 py-1 text-sm rounded-full ${ipo.status === 'Upcoming' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}">${ipo.status}</span>
+                    <div class="mt-6 space-y-5">
+                        <div><h2 class="text-xl font-bold">🏢 Company Overview</h2><p>${ipo.overview}</p></div>
+                        <div class="bg-gray-50 p-4 rounded"><h2 class="text-xl font-bold">📋 Issue Details</h2><p>Price: ${ipo.price} | Open: ${ipo.openDate}</p></div>
+                        <div><h2 class="text-xl font-bold">📊 Financial Summary</h2><p>${ipo.financialSummary}</p></div>
+                        <div class="bg-red-50 p-4 rounded"><h2 class="text-xl font-bold text-red-800">⚠️ Risk Factors</h2><p>${ipo.riskFactors}</p></div>
+                        <div class="bg-green-50 p-4 rounded"><h2 class="text-xl font-bold text-green-800">✅ Should You Apply?</h2><p>${ipo.shouldApply}</p></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Detail view - Mutual Fund (special focus on Siddhartha Equity Fund II)
+        function showFundDetail(id) {
+            const fund = mutualFundsData.find(f => f.id === id);
+            if (!fund) return;
+            let portfolioHtml = '';
+            if (fund.portfolio) {
+                portfolioHtml = `<div class="mt-4"><h3 class="font-bold">Portfolio Breakdown:</h3><div class="space-y-2 mt-2">`;
+                for (let [k,v] of Object.entries(fund.portfolio)) {
+                    portfolioHtml += `<div><div class="flex justify-between"><span class="capitalize">${k}</span><span>${v}</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-accent h-2 rounded-full" style="width: ${v}"></div></div></div>`;
+                }
+                portfolioHtml += `</div></div>`;
+            }
+            document.getElementById('detailContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+                    <h1 class="text-3xl font-bold text-dark-blue">${fund.name}</h1>
+                    <div class="flex gap-2 my-2"><span class="px-3 py-1 text-sm rounded-full bg-blue-100">${fund.type}</span><span class="px-3 py-1 text-sm rounded-full bg-green-100">${fund.performance}</span></div>
+                    <div class="mt-6 space-y-5">
+                        <div><h2 class="text-xl font-bold">📖 Overview</h2><p>${fund.overview}</p></div>
+                        <div><h2 class="text-xl font-bold">🎯 Fund Objective</h2><p>${fund.objective}</p></div>
+                        ${portfolioHtml}
+                        <div class="bg-blue-50 p-4 rounded"><h2 class="text-xl font-bold">📈 Performance Insights</h2><p>${fund.performanceInsights}</p></div>
+                        <div><h2 class="text-xl font-bold">⚠️ Risk Level: ${fund.riskLevel}</h2><p>${fund.riskExplanation}</p></div>
+                        <div class="bg-green-50 p-4 rounded"><h2 class="text-xl font-bold text-green-800">👤 Who Should Invest?</h2><p>${fund.whoShouldInvest}</p></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showBlogDetail(id) {
+            const blog = blogsData.find(b => b.id === id);
+            if (!blog) return;
+            document.getElementById('detailContent').innerHTML = `
+                <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8 max-w-3xl mx-auto">
+                    <h1 class="text-3xl font-bold text-dark-blue mb-4">${blog.title}</h1>
+                    <div class="prose whitespace-pre-wrap">${blog.content}</div>
+                </div>
+            `;
+        }
+
+        // Generic showDetail with type routing
+        function showDetail(type, id) {
+            if (type === 'ipo') showIPOdetail(id);
+            else if (type === 'fund') showFundDetail(id);
+            else if (type === 'blog') showBlogDetail(id);
+            else if (type === 'sector') {
+                // For sectors, just redirect to sectors page and scroll? Simpler: show alert or auto switch
+                showPage('sectors');
+                return;
+            }
+            // Hide all pages, show detail view
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById('detailView').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function goBack() {
+            // Determine which page to show based on last active? Simpler: show home as default after back
+            // We'll store last page in a variable
+            if (window.lastPage) {
+                showPage(window.lastPage);
+            } else {
+                showPage('home');
+            }
+        }
+
+        let currentPage = 'home';
+        function showPage(pageName) {
+            currentPage = pageName;
+            window.lastPage = pageName;
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            if (pageName === 'home') document.getElementById('homePage').classList.remove('hidden');
+            else if (pageName === 'ipos') { document.getElementById('iposPage').classList.remove('hidden'); renderIposPage(); }
+            else if (pageName === 'mutualfunds') { document.getElementById('mutualfundsPage').classList.remove('hidden'); renderFundsPage(); }
+            else if (pageName === 'sectors') { document.getElementById('sectorsPage').classList.remove('hidden'); renderSectorsPage(); }
+            else if (pageName === 'blog') { document.getElementById('blogPage').classList.remove('hidden'); renderBlogPage(); }
+            window.scrollTo(0,0);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Initial render
+        renderHome();
+        showPage('home');
+
+        // Mobile menu button event
+        document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
+        
+        // Style nav buttons active state (simple)
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('text-accent', 'font-semibold'));
+                this.classList.add('text-accent', 'font-semibold');
+            });
+        });
+    </script>
+</body>
+</html>
